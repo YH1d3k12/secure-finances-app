@@ -8,7 +8,7 @@ import {
     UpdateDateColumn,
 } from 'typeorm';
 import { User } from './user';
-import { Transaction } from './transaction';
+import { Entry } from './entry';
 
 @Entity()
 export class Category {
@@ -24,8 +24,8 @@ export class Category {
     @ManyToOne(() => User, user => user.categories)
     user: User;
 
-    @OneToMany(() => Transaction, transaction => transaction.category)
-    transactions: Transaction[];
+    @OneToMany(() => Entry, entry => entry.category)
+    entries: Entry[];
 
     @CreateDateColumn()
     createdAt: Date;

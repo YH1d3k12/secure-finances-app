@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import { CategoryService } from '../service/category-service';
-import { AuthRequest } from '../middleware';
+import { AuthRequest } from '../middleware/auth';
 
 export class CategoryController {
     private categoryService: CategoryService;

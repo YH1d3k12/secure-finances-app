@@ -8,7 +8,7 @@ import path from 'path';
 import { initializeDatabase } from './config/database';
 import { sanitizeMiddleware } from './middleware/sanitizeMiddleware';
 import userRoutes from './routes/user';
-import transactionRoutes from './routes/transaction';
+import transactionRoutes from './routes/entry';
 
 dotenv.config();
 

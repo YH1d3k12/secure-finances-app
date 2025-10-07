@@ -1,16 +1,13 @@
 import { Router } from 'express';
 import multer from 'multer';
 import path from 'path';
-import { TransactionController } from '../controller/transaction-controller';
-import {
-    CreateTransactionDto,
-    UpdateTransactionDto,
-} from '../dto/transaction-dto';
+import { EntryController } from '../controller/entry-controller';
+import { CreateEntryDto, UpdateEntryDto } from '../dto/entry-dto';
 import { authMiddleware } from '../middleware/auth';
 import { validationMiddleware } from '../middleware/validation';
 
 const router = Router();
-const transactionController = new TransactionController();
+const entryController = new EntryController();
 
 // Configuração do multer para upload de arquivos
 const storage = multer.diskStorage({
@@ -54,17 +51,17 @@ router.use(authMiddleware);
 router.post(
     '/',
     upload.single('attachment'),
-    validationMiddleware(CreateTransactionDto),
-    transactionController.create
+    validationMiddleware(CreateEntryDto),
+    entryController.create
 );
-router.get('/', transactionController.getAll);
-router.get('/balance', transactionController.getBalance);
+router.get('/', entryController.getAll);
+router.get('/balance', entryController.getBalance);
 router.put(
     '/:id',
     upload.single('attachment'),
-    validationMiddleware(UpdateTransactionDto),
-    transactionController.update
+    validationMiddleware(UpdateEntryDto),
+    entryController.update
 );
-router.delete('/:id', transactionController.delete);
+router.delete('/:id', entryController.delete);
 
 export default router;

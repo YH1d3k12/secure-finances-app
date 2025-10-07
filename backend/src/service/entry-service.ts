@@ -1,29 +1,28 @@
-import { Transaction } from 'typeorm';
-import { TransactionType } from '../model/transaction';
+import { Entry, EntryType } from '../model/entry';
 import { CategoryRepository } from '../repository/category-repository';
-import { TransactionRepository } from '../repository/transaction-repository';
+import { EntryRepository } from '../repository/entry-repository';
 import { UserRepository } from '../repository/user-repository';
 
-export class TransactionService {
-    private transactionRepository: TransactionRepository;
+export class EntryService {
+    private entryRepository: EntryRepository;
     private userRepository: UserRepository;
     private categoryRepository: CategoryRepository;
 
     constructor() {
-        this.transactionRepository = new TransactionRepository();
+        this.entryRepository = new EntryRepository();
         this.userRepository = new UserRepository();
         this.categoryRepository = new CategoryRepository();
     }
 
-    async createTransaction(
+    async createEntry(
         userId: number,
         amount: number,
-        type: TransactionType,
+        type: EntryType,
         description: string,
         date: Date,
         categoryId: number,
         attachment?: string
-    ): Promise<Transaction> {
+    ): Promise<Entry> {
         const user = await this.userRepository.findById(userId);
         if (!user) {
             throw new Error('Usuário não encontrado');
@@ -34,7 +33,7 @@ export class TransactionService {
             throw new Error('Categoria não encontrada');
         }
 
-        const transaction = await this.transactionRepository.create({
+        const entry = await this.entryRepository.create({
             amount,
             type,
             description,
@@ -46,25 +45,25 @@ export class TransactionService {
 
         // Atualizar saldo do usuário
         const newBalance =
-            type === TransactionType.INCOME
+            type === EntryType.INCOME
                 ? user.balance + amount
                 : user.balance - amount;
 
         await this.userRepository.updateBalance(userId, newBalance);
 
-        return transaction;
+        return entry;
     }
 
-    async getUserTransactions(
+    async getUserEntries(
         userId: number,
         filters?: {
-            type?: TransactionType;
+            type?: EntryType;
             categoryId?: number;
             startDate?: Date;
             endDate?: Date;
         }
-    ): Promise<Transaction[]> {
-        return this.transactionRepository.findByUserId(userId, filters);
+    ): Promise<Entry[]> {
+        return this.entryRepository.findByUserId(userId, filters);
     }
 
     async getUserBalance(userId: number): Promise<number> {
@@ -75,21 +74,19 @@ export class TransactionService {
         return user.balance;
     }
 
-    async updateTransaction(
-        transactionId: number,
+    async updateEntry(
+        entryId: number,
         userId: number,
         amount?: number,
-        type?: TransactionType,
+        type?: EntryType,
         description?: string,
         date?: Date,
         categoryId?: number,
         attachment?: string
-    ): Promise<Transaction> {
-        const transaction = await this.transactionRepository.findById(
-            transactionId
-        );
-        if (!transaction || transaction.user.id !== userId) {
-            throw new Error('Transação não encontrada');
+    ): Promise<Entry> {
+        const entry = await this.entryRepository.findById(entryId);
+        if (!entry || entry.user.id !== userId) {
+            throw new Error('Entrada não encontrada');
         }
 
         const user = await this.userRepository.findById(userId);
@@ -97,15 +94,15 @@ export class TransactionService {
             throw new Error('Usuário não encontrado');
         }
 
-        // Reverter o efeito da transação anterior no saldo
-        const oldAmount = transaction.amount;
-        const oldType = transaction.type;
+        // Reverter o efeito da entrada anterior no saldo
+        const oldAmount = entry.amount;
+        const oldType = entry.type;
         let newBalance =
-            oldType === TransactionType.INCOME
+            oldType === EntryType.INCOME
                 ? user.balance - oldAmount
                 : user.balance + oldAmount;
 
-        const updateData: Partial<Transaction> = {};
+        const updateData: Partial<Entry> = {};
 
         if (amount !== undefined) updateData.amount = amount;
         if (type !== undefined) updateData.type = type;
@@ -121,36 +118,31 @@ export class TransactionService {
             updateData.category = category;
         }
 
-        const updatedTransaction = await this.transactionRepository.update(
-            transactionId,
+        const updatedEntry = await this.entryRepository.update(
+            entryId,
             updateData
         );
-        if (!updatedTransaction) {
-            throw new Error('Erro ao atualizar transação');
+        if (!updatedEntry) {
+            throw new Error('Erro ao atualizar entrada');
         }
 
-        // Aplicar o efeito da nova transação no saldo
+        // Aplicar o efeito da nova entrada no saldo
         const finalAmount = amount !== undefined ? amount : oldAmount;
         const finalType = type !== undefined ? type : oldType;
         newBalance =
-            finalType === TransactionType.INCOME
+            finalType === EntryType.INCOME
                 ? newBalance + finalAmount
                 : newBalance - finalAmount;
 
         await this.userRepository.updateBalance(userId, newBalance);
 
-        return updatedTransaction;
+        return updatedEntry;
     }
 
-    async deleteTransaction(
-        transactionId: number,
-        userId: number
-    ): Promise<void> {
-        const transaction = await this.transactionRepository.findById(
-            transactionId
-        );
-        if (!transaction || transaction.user.id !== userId) {
-            throw new Error('Transação não encontrada');
+    async deleteEntry(entryId: number, userId: number): Promise<void> {
+        const entry = await this.entryRepository.findById(entryId);
+        if (!entry || entry.user.id !== userId) {
+            throw new Error('Entrada não encontrada');
         }
 
         const user = await this.userRepository.findById(userId);
@@ -158,13 +150,13 @@ export class TransactionService {
             throw new Error('Usuário não encontrado');
         }
 
-        // Reverter o efeito da transação no saldo
+        // Reverter o efeito da entrada no saldo
         const newBalance =
-            transaction.type === TransactionType.INCOME
-                ? user.balance - transaction.amount
-                : user.balance + transaction.amount;
+            entry.type === EntryType.INCOME
+                ? user.balance - entry.amount
+                : user.balance + entry.amount;
 
         await this.userRepository.updateBalance(userId, newBalance);
-        await this.transactionRepository.delete(transactionId);
+        await this.entryRepository.delete(entryId);
     }
 }

@@ -1,13 +1,13 @@
 import { Response } from 'express';
-import { TransactionService } from '../service/transaction-service';
-import { AuthRequest } from '../middleware';
-import { TransactionType } from '../model/transaction';
+import { EntryService } from '../service/entry-service';
+import { AuthRequest } from '../middleware/auth';
+import { EntryType } from '../model/entry';
 
-export class TransactionController {
-    private transactionService: TransactionService;
+export class EntryController {
+    private entryService: EntryService;
 
     constructor() {
-        this.transactionService = new TransactionService();
+        this.entryService = new EntryService();
     }
 
     create = async (req: AuthRequest, res: Response) => {
@@ -16,7 +16,7 @@ export class TransactionController {
             const userId = req.userId!;
             const attachment = req.file?.filename;
 
-            const transaction = await this.transactionService.createTransaction(
+            const entry = await this.entryService.createEntry(
                 userId,
                 amount,
                 type,
@@ -28,16 +28,16 @@ export class TransactionController {
 
             res.status(201).json({
                 message: 'Transação criada com sucesso',
-                transaction: {
-                    id: transaction.id,
-                    amount: transaction.amount,
-                    type: transaction.type,
-                    description: transaction.description,
-                    date: transaction.date,
-                    attachment: transaction.attachment,
+                entry: {
+                    id: entry.id,
+                    amount: entry.amount,
+                    type: entry.type,
+                    description: entry.description,
+                    date: entry.date,
+                    attachment: entry.attachment,
                     category: {
-                        id: transaction.category.id,
-                        name: transaction.category.name,
+                        id: entry.category.id,
+                        name: entry.category.name,
                     },
                 },
             });
@@ -52,28 +52,27 @@ export class TransactionController {
             const { type, categoryId, startDate, endDate } = req.query;
 
             const filters: any = {};
-            if (type) filters.type = type as TransactionType;
+            if (type) filters.type = type as EntryType;
             if (categoryId) filters.categoryId = parseInt(categoryId as string);
             if (startDate) filters.startDate = new Date(startDate as string);
             if (endDate) filters.endDate = new Date(endDate as string);
 
-            const transactions =
-                await this.transactionService.getUserTransactions(
-                    userId,
-                    filters
-                );
+            const entries = await this.entryService.getUserEntries(
+                userId,
+                filters
+            );
 
             res.json({
-                transactions: transactions.map(transaction => ({
-                    id: transaction.id,
-                    amount: transaction.amount,
-                    type: transaction.type,
-                    description: transaction.description,
-                    date: transaction.date,
-                    attachment: transaction.attachment,
+                entries: entries.map(entry => ({
+                    id: entry.id,
+                    amount: entry.amount,
+                    type: entry.type,
+                    description: entry.description,
+                    date: entry.date,
+                    attachment: entry.attachment,
                     category: {
-                        id: transaction.category.id,
-                        name: transaction.category.name,
+                        id: entry.category.id,
+                        name: entry.category.name,
                     },
                 })),
             });
@@ -85,9 +84,7 @@ export class TransactionController {
     getBalance = async (req: AuthRequest, res: Response) => {
         try {
             const userId = req.userId!;
-            const balance = await this.transactionService.getUserBalance(
-                userId
-            );
+            const balance = await this.entryService.getUserBalance(userId);
 
             res.json({ balance });
         } catch (error: any) {
@@ -97,13 +94,13 @@ export class TransactionController {
 
     update = async (req: AuthRequest, res: Response) => {
         try {
-            const transactionId = parseInt(req.params.id);
+            const entryId = parseInt(req.params.id);
             const { amount, type, description, date, categoryId } = req.body;
             const userId = req.userId!;
             const attachment = req.file?.filename;
 
-            const transaction = await this.transactionService.updateTransaction(
-                transactionId,
+            const entry = await this.entryService.updateEntry(
+                entryId,
                 userId,
                 amount,
                 type,
@@ -115,16 +112,16 @@ export class TransactionController {
 
             res.json({
                 message: 'Transação atualizada com sucesso',
-                transaction: {
-                    id: transaction.id,
-                    amount: transaction.amount,
-                    type: transaction.type,
-                    description: transaction.description,
-                    date: transaction.date,
-                    attachment: transaction.attachment,
+                entry: {
+                    id: entry.id,
+                    amount: entry.amount,
+                    type: entry.type,
+                    description: entry.description,
+                    date: entry.date,
+                    attachment: entry.attachment,
                     category: {
-                        id: transaction.category.id,
-                        name: transaction.category.name,
+                        id: entry.category.id,
+                        name: entry.category.name,
                     },
                 },
             });
@@ -135,13 +132,10 @@ export class TransactionController {
 
     delete = async (req: AuthRequest, res: Response) => {
         try {
-            const transactionId = parseInt(req.params.id);
+            const entryId = parseInt(req.params.id);
             const userId = req.userId!;
 
-            await this.transactionService.deleteTransaction(
-                transactionId,
-                userId
-            );
+            await this.entryService.deleteEntry(entryId, userId);
 
             res.json({ message: 'Transação removida com sucesso' });
         } catch (error: any) {

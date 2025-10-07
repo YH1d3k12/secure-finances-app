@@ -6,15 +6,15 @@ import {
     IsOptional,
     Min,
 } from 'class-validator';
-import { TransactionType } from '../model/transaction';
+import { EntryType } from '../model/entry';
 
-export class CreateTransactionDto {
+export class CreateEntryDto {
     @IsNumber({}, { message: 'Valor deve ser um número' })
     @Min(0.01, { message: 'Valor deve ser maior que zero' })
     amount: number;
 
-    @IsEnum(TransactionType, { message: 'Tipo deve ser income ou expense' })
-    type: TransactionType;
+    @IsEnum(EntryType, { message: 'Tipo deve ser income ou expense' })
+    type: EntryType;
 
     @IsString({ message: 'Descrição deve ser uma string' })
     description: string;
@@ -26,15 +26,15 @@ export class CreateTransactionDto {
     categoryId: number;
 }
 
-export class UpdateTransactionDto {
+export class UpdateEntryDto {
     @IsOptional()
     @IsNumber({}, { message: 'Valor deve ser um número' })
     @Min(0.01, { message: 'Valor deve ser maior que zero' })
     amount?: number;
 
     @IsOptional()
-    @IsEnum(TransactionType, { message: 'Tipo deve ser income ou expense' })
-    type?: TransactionType;
+    @IsEnum(EntryType, { message: 'Tipo deve ser income ou expense' })
+    type?: EntryType;
 
     @IsOptional()
     @IsString({ message: 'Descrição deve ser uma string' })

@@ -6,7 +6,7 @@ import {
     CreateDateColumn,
     UpdateDateColumn,
 } from 'typeorm';
-import { Transaction } from './transaction';
+import { Entry } from './entry';
 import { Category } from './category';
 
 @Entity()
@@ -26,8 +26,8 @@ export class User {
     @Column({ default: 0 })
     balance: number;
 
-    @OneToMany(() => Transaction, transaction => transaction.user)
-    transactions: Transaction[];
+    @OneToMany(() => Entry, entry => entry.user)
+    entries: Entry[];
 
     @OneToMany(() => Category, category => category.user)
     categories: Category[];

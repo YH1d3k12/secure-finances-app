@@ -9,13 +9,13 @@ import {
 import { User } from './user';
 import { Category } from './category';
 
-export enum TransactionType {
+export enum EntryType {
     INCOME = 'income',
     EXPENSE = 'expense',
 }
 
 @Entity()
-export class Transaction {
+export class Entry {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -23,10 +23,10 @@ export class Transaction {
     amount: number;
 
     @Column({
-        type: 'enum',
-        enum: TransactionType,
+        type: 'text',
+        enum: EntryType,
     })
-    type: TransactionType;
+    type: EntryType;
 
     @Column()
     description: string;
@@ -37,10 +37,10 @@ export class Transaction {
     @Column({ nullable: true })
     attachment: string;
 
-    @ManyToOne(() => User, user => user.transactions)
+    @ManyToOne(() => User, user => user.entries)
     user: User;
 
-    @ManyToOne(() => Category, category => category.transactions)
+    @ManyToOne(() => Category, category => category.entries)
     category: Category;
 
     @CreateDateColumn()
