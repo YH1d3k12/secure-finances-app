@@ -6,9 +6,9 @@ import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import path from 'path';
 import { initializeDatabase } from './config/database';
-import { sanitizeMiddleware } from './src/middleware/sanitizeMiddleware';
-import userRoutes from './src/routes/user';
-import transactionRoutes from './src/routes/transactionRoutes';
+import { sanitizeMiddleware } from './middleware/sanitizeMiddleware';
+import userRoutes from './routes/user';
+import transactionRoutes from './routes/transaction';
 
 dotenv.config();
 

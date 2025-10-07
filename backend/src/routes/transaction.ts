@@ -6,7 +6,8 @@ import {
     CreateTransactionDto,
     UpdateTransactionDto,
 } from '../dto/transaction-dto';
-import { authMiddleware, validationMiddleware } from '../middleware';
+import { authMiddleware } from '../middleware/auth';
+import { validationMiddleware } from '../middleware/validation';
 
 const router = Router();
 const transactionController = new TransactionController();
