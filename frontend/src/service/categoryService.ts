@@ -3,7 +3,7 @@ import { Category } from '../types';
 
 export const categoryService = {
     async getCategories(): Promise<Category[]> {
-        const response = await api.get('/categories');
+        const response = await api.get('/category');
         return response.data.categories;
     },
 
@@ -11,7 +11,7 @@ export const categoryService = {
         name: string,
         description?: string
     ): Promise<Category> {
-        const response = await api.post('/categories', { name, description });
+        const response = await api.post('/category', { name, description });
         return response.data.category;
     },
 
@@ -20,7 +20,7 @@ export const categoryService = {
         name?: string,
         description?: string
     ): Promise<Category> {
-        const response = await api.put(`/categories/${id}`, {
+        const response = await api.put(`/category/${id}`, {
             name,
             description,
         });
@@ -28,6 +28,6 @@ export const categoryService = {
     },
 
     async deleteCategory(id: number): Promise<void> {
-        await api.delete(`/categories/${id}`);
+        await api.delete(`/category/${id}`);
     },
 };

@@ -5,13 +5,12 @@ import { User } from '../model/user';
 
 export class UserService {
     private userRepository: UserRepository;
-    private jwtSecret: string;
 
     constructor() {
         this.userRepository = new UserRepository();
-        this.jwtSecret = process.env.JWT_SECRET || 'your-secret-key';
     }
 
+    // Cria um novo usuário e retorna o token JWT
     async register(
         email: string,
         password: string,
@@ -34,6 +33,7 @@ export class UserService {
         return { user, token };
     }
 
+    // Login do usuário, valida senha e retorna token JWT
     async login(
         email: string,
         password: string
@@ -52,18 +52,29 @@ export class UserService {
         return { user, token };
     }
 
+    // Gera token JWT
     private generateToken(userId: number): string {
-        return jwt.sign({ userId }, this.jwtSecret, { expiresIn: '24h' });
+        const secret = this.getSecret();
+        return jwt.sign({ userId }, secret, { expiresIn: '24h' });
     }
 
+    // Verifica token JWT
     verifyToken(token: string): { userId: number } {
         try {
-            const decoded = jwt.verify(token, this.jwtSecret) as {
-                userId: number;
-            };
-            return decoded;
-        } catch (error) {
+            const secret = this.getSecret();
+            const decoded = jwt.verify(token, secret);
+            return decoded as { userId: number };
+        } catch {
             throw new Error('Token inválido');
         }
+    }
+
+    // Lê a secret do JWT dinamicamente
+    private getSecret(): string {
+        const secret = process.env.JWT_SECRET;
+        if (!secret) {
+            throw new Error('JWT_SECRET não definido');
+        }
+        return secret;
     }
 }

@@ -8,7 +8,7 @@ export const transactionService = {
         startDate?: string;
         endDate?: string;
     }): Promise<Transaction[]> {
-        const response = await api.get('/entries', { params: filters });
+        const response = await api.get('/entry', { params: filters });
         return response.data.transactions;
     },
 
@@ -31,7 +31,7 @@ export const transactionService = {
             formData.append('attachment', data.attachment);
         }
 
-        const response = await api.post('/entries', formData, {
+        const response = await api.post('/entry', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
@@ -61,7 +61,7 @@ export const transactionService = {
             formData.append('categoryId', data.categoryId.toString());
         if (data.attachment) formData.append('attachment', data.attachment);
 
-        const response = await api.put(`/entries/${id}`, formData, {
+        const response = await api.put(`/entry/${id}`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
@@ -70,11 +70,11 @@ export const transactionService = {
     },
 
     async deleteTransaction(id: number): Promise<void> {
-        await api.delete(`/entries/${id}`);
+        await api.delete(`/entry/${id}`);
     },
 
     async getBalance(): Promise<number> {
-        const response = await api.get('/entries/balance');
+        const response = await api.get('/entry/balance');
         return response.data.balance;
     },
 };

@@ -1,7 +1,8 @@
 import { Router } from 'express';
 import { CategoryController } from '../controller/category-controller';
 import { CreateCategoryDto, UpdateCategoryDto } from '../dto/category-dto';
-import { authMiddleware, validationMiddleware } from '../middleware';
+import { authMiddleware } from '../middleware/auth';
+import { validationMiddleware } from '../middleware/validation';
 
 const router = Router();
 const categoryController = new CategoryController();

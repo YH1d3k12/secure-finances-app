@@ -1,16 +1,16 @@
 import 'reflect-metadata';
+import dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
-import session from 'express-session';
 import cookieParser from 'cookie-parser';
-import dotenv from 'dotenv';
 import path from 'path';
 import { initializeDatabase } from './config/database';
 import { sanitizeMiddleware } from './middleware/sanitizeMiddleware';
 import userRoutes from './routes/user';
-import transactionRoutes from './routes/entry';
+import entryRoutes from './routes/entry';
+import categoryRoutes from './routes/category';
 
-dotenv.config();
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -19,28 +19,13 @@ const PORT = process.env.PORT || 3001;
 app.use(
     cors({
         origin: 'http://localhost:5173',
-        credentials: true,
+        // Se usar JWT, não precisa de credentials true para cookies
     })
 );
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
-
-// Configuração de sessão com proteção contra Session Hijacking
-app.use(
-    session({
-        secret: process.env.SESSION_SECRET || 'default_secret_change_me',
-        resave: false,
-        saveUninitialized: false,
-        cookie: {
-            httpOnly: true, // Previne acesso via JavaScript (XSS)
-            secure: process.env.NODE_ENV === 'production', // HTTPS apenas em produção
-            sameSite: 'strict', // Proteção contra CSRF
-            maxAge: 1000 * 60 * 60 * 24, // 24 horas
-        },
-    })
-);
+app.use(cookieParser()); // Pode manter se lidar com cookies (não para sessão)
 
 // Middleware de sanitização para prevenir XSS
 app.use(sanitizeMiddleware);
@@ -50,7 +35,8 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // Rotas
 app.use('/api/auth', userRoutes);
-app.use('/api/transactions', transactionRoutes);
+app.use('/api/entry', entryRoutes);
+app.use('/api/category', categoryRoutes);
 
 // Rota de health check
 app.get('/health', (req, res) => {

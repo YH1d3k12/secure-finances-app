@@ -21,8 +21,8 @@ api.interceptors.response.use(
     response => response,
     error => {
         if (error.response?.status === 401) {
-            removeToken();
-            window.location.href = '/login';
+            // removeToken();
+            // window.location.href = `${import.meta.env.BASE_URL}login`;
         }
         return Promise.reject(error);
     }
