@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import Layout from '../components/Layout';
-import { transactionService } from '../service/transactionService';
-import { categoryService } from '../service/categoryService';
-import { Transaction, Category } from '../types';
+import Layout from '../../components/Layout';
+import { transactionService } from '../../service/transactionService';
+import { categoryService } from '../../service/categoryService';
+import { Transaction, Category } from '../../types';
 
 const Transactions: React.FC = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);

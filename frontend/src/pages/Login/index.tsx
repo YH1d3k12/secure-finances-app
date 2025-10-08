@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { authService } from '../service/authService';
-import { setToken } from '../utils/auth';
+import { authService } from '../../service/authService';
+import { setToken } from '../../utils/auth';
 
-const Register: React.FC = () => {
-  const [name, setName] = useState('');
+const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -17,11 +16,11 @@ const Register: React.FC = () => {
     setError('');
 
     try {
-      const response = await authService.register(email, password, name);
+      const response = await authService.login(email, password);
       setToken(response.token);
       navigate('/dashboard');
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Erro ao criar conta');
+      setError(err.response?.data?.error || 'Erro ao fazer login');
     } finally {
       setLoading(false);
     }
@@ -32,7 +31,7 @@ const Register: React.FC = () => {
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Crie sua conta
+            Entre na sua conta
           </h2>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
@@ -44,21 +43,11 @@ const Register: React.FC = () => {
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
               <input
-                type="text"
-                required
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Nome completo"
-              />
-            </div>
-            <div>
-              <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Email"
               />
             </div>
@@ -69,8 +58,7 @@ const Register: React.FC = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Senha (mínimo 6 caracteres)"
-                minLength={6}
+                placeholder="Senha"
               />
             </div>
           </div>
@@ -81,16 +69,16 @@ const Register: React.FC = () => {
               disabled={loading}
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
             >
-              {loading ? 'Criando conta...' : 'Criar conta'}
+              {loading ? 'Entrando...' : 'Entrar'}
             </button>
           </div>
 
           <div className="text-center">
             <Link
-              to="/login"
+              to="/register"
               className="font-medium text-indigo-600 hover:text-indigo-500"
             >
-              Já tem uma conta? Entre aqui
+              Não tem uma conta? Cadastre-se
             </Link>
           </div>
         </form>
@@ -99,5 +87,4 @@ const Register: React.FC = () => {
   );
 };
 
-export default Register;
-
+export default Login;
