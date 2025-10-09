@@ -1,10 +1,10 @@
 // import React, { useState, useEffect } from 'react';
-// import { transactionService } from '../../service/transactionService';
-// import { Transaction } from '../../types';
+// import { entryService } from '../../service/entryService';
+// import { Entry } from '../../types';
 
 // const Dashboard: React.FC = () => {
 //     const [balance, setBalance] = useState<number>(0);
-//     const [recentTransactions, setRecentTransactions] = useState<Transaction[]>(
+//     const [recentEntries, setRecentEntries] = useState<Entry[]>(
 //         []
 //     );
 //     const [loading, setLoading] = useState(true);
@@ -12,13 +12,13 @@
 //     useEffect(() => {
 //         const fetchData = async () => {
 //             try {
-//                 const [balanceData, transactionsData] = await Promise.all([
-//                     transactionService.getBalance(),
-//                     transactionService.getTransactions(),
+//                 const [balanceData, entriesData] = await Promise.all([
+//                     entryService.getBalance(),
+//                     entryService.getEntries(),
 //                 ]);
 
 //                 setBalance(balanceData);
-//                 setRecentTransactions(transactionsData.slice(0, 5)); // Últimas 5 transações
+//                 setRecentEntries(entriesData.slice(0, 5)); // Últimas 5 transações
 //             } catch (error) {
 //                 console.error('Erro ao carregar dados:', error);
 //             } finally {
@@ -86,18 +86,18 @@
 //                         </p>
 //                     </div>
 //                     <ul className="divide-y divide-gray-200">
-//                         {recentTransactions.length === 0 ? (
+//                         {recentEntries.length === 0 ? (
 //                             <li className="px-4 py-4 text-center text-gray-500">
 //                                 Nenhuma transação encontrada
 //                             </li>
 //                         ) : (
-//                             recentTransactions.map(transaction => (
-//                                 <li key={transaction.id} className="px-4 py-4">
+//                             recentEntries.map(entry => (
+//                                 <li key={entry.id} className="px-4 py-4">
 //                                     <div className="flex items-center justify-between">
 //                                         <div className="flex items-center">
 //                                             <div
 //                                                 className={`flex-shrink-0 w-2 h-2 rounded-full ${
-//                                                     transaction.type ===
+//                                                     entry.type ===
 //                                                     'income'
 //                                                         ? 'bg-green-400'
 //                                                         : 'bg-red-400'
@@ -105,13 +105,13 @@
 //                                             ></div>
 //                                             <div className="ml-4">
 //                                                 <div className="text-sm font-medium text-gray-900">
-//                                                     {transaction.description}
+//                                                     {entry.description}
 //                                                 </div>
 //                                                 <div className="text-sm text-gray-500">
-//                                                     {transaction.category.name}{' '}
+//                                                     {entry.category.name}{' '}
 //                                                     •{' '}
 //                                                     {new Date(
-//                                                         transaction.date
+//                                                         entry.date
 //                                                     ).toLocaleDateString(
 //                                                         'pt-BR'
 //                                                     )}
@@ -120,15 +120,15 @@
 //                                         </div>
 //                                         <div
 //                                             className={`text-sm font-medium ${
-//                                                 transaction.type === 'income'
+//                                                 entry.type === 'income'
 //                                                     ? 'text-green-600'
 //                                                     : 'text-red-600'
 //                                             }`}
 //                                         >
-//                                             {transaction.type === 'income'
+//                                             {entry.type === 'income'
 //                                                 ? '+'
 //                                                 : '-'}
-//                                             R$ {transaction.amount.toFixed(2)}
+//                                             R$ {entry.amount.toFixed(2)}
 //                                         </div>
 //                                     </div>
 //                                 </li>
@@ -144,26 +144,24 @@
 // export default Dashboard;
 
 import React, { useState, useEffect } from 'react';
-import { transactionService } from '../../service/transactionService';
-import { Transaction } from '../../types';
+import { entryService } from '../../service/entryService';
+import { Entry } from '../../types';
 
 const Dashboard: React.FC = () => {
     const [balance, setBalance] = useState<number>(0);
-    const [recentTransactions, setRecentTransactions] = useState<Transaction[]>(
-        []
-    );
+    const [recentEntries, setRecentEntries] = useState<Entry[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [balanceData, transactionsData] = await Promise.all([
-                    transactionService.getBalance(),
-                    transactionService.getTransactions(),
+                const [balanceData, entriesData] = await Promise.all([
+                    entryService.getBalance(),
+                    entryService.getEntries(),
                 ]);
 
                 setBalance(balanceData);
-                setRecentTransactions(transactionsData.slice(0, 5)); // Últimas 5 transações
+                setRecentEntries(entriesData.slice(0, 5)); // Últimas 5 transações
             } catch (error) {
                 console.error('Erro ao carregar dados:', error);
             } finally {
@@ -231,32 +229,33 @@ const Dashboard: React.FC = () => {
                         </p>
                     </div>
                     <ul className="divide-y divide-base-300">
-                        {recentTransactions.length === 0 ? (
+                        {recentEntries.length === 0 ? (
                             <li className="px-4 py-4 text-center text-text-base">
                                 Nenhuma transação encontrada
                             </li>
                         ) : (
-                            recentTransactions.map(transaction => (
-                                <li key={transaction.id} className="px-4 py-4 sm:px-6 hover:bg-base-100 transition-colors">
+                            recentEntries.map(entry => (
+                                <li
+                                    key={entry.id}
+                                    className="px-4 py-4 sm:px-6 hover:bg-base-100 transition-colors"
+                                >
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center">
                                             <div
                                                 className={`flex-shrink-0 w-2.5 h-2.5 rounded-full ${
-                                                    transaction.type ===
-                                                    'income'
+                                                    entry.type === 'income'
                                                         ? 'bg-success'
                                                         : 'bg-error'
                                                 }`}
                                             ></div>
                                             <div className="ml-4">
                                                 <div className="text-sm font-medium text-text-heading">
-                                                    {transaction.description}
+                                                    {entry.description}
                                                 </div>
                                                 <div className="text-sm text-text-base">
-                                                    {transaction.category.name}{' '}
-                                                    •{' '}
+                                                    {entry.category.name} •{' '}
                                                     {new Date(
-                                                        transaction.date
+                                                        entry.date
                                                     ).toLocaleDateString(
                                                         'pt-BR'
                                                     )}
@@ -265,15 +264,15 @@ const Dashboard: React.FC = () => {
                                         </div>
                                         <div
                                             className={`text-sm font-medium ${
-                                                transaction.type === 'income'
+                                                entry.type === 'income'
                                                     ? 'text-success'
                                                     : 'text-error'
                                             }`}
                                         >
-                                            {transaction.type === 'income'
+                                            {entry.type === 'income'
                                                 ? '+'
                                                 : '-'}
-                                            R$ {transaction.amount.toFixed(2)}
+                                            R$ {entry.amount.toFixed(2)}
                                         </div>
                                     </div>
                                 </li>

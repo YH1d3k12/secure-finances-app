@@ -1,35 +1,34 @@
 export interface User {
-  id: number;
-  email: string;
-  name: string;
-  balance: number;
+    id: number;
+    email: string;
+    name: string;
+    balance: number;
 }
 
 export interface Category {
-  id: number;
-  name: string;
-  description?: string;
+    id: number;
+    name: string;
+    description?: string;
 }
 
-export interface Transaction {
-  id: number;
-  amount: number;
-  type: 'income' | 'expense';
-  description: string;
-  date: string;
-  attachment?: string;
-  category: Category;
+export interface Entry {
+    id: number;
+    amount: number;
+    type: 'income' | 'expense';
+    description: string;
+    date: string;
+    attachment?: string;
+    category: Category;
 }
 
 export interface AuthResponse {
-  message: string;
-  user: User;
-  token: string;
+    message: string;
+    user: User;
+    token: string;
 }
 
 export interface ApiResponse<T> {
-  message?: string;
-  data?: T;
-  error?: string;
+    message?: string;
+    data?: T;
+    error?: string;
 }
-

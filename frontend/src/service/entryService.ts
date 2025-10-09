@@ -1,25 +1,25 @@
 import api from './api';
-import { Transaction } from '../types';
+import { Entry } from '../types';
 
-export const transactionService = {
-    async getTransactions(filters?: {
+export const entryService = {
+    async getEntries(filters?: {
         type?: 'income' | 'expense';
         categoryId?: number;
         startDate?: string;
         endDate?: string;
-    }): Promise<Transaction[]> {
+    }): Promise<Entry[]> {
         const response = await api.get('/entry', { params: filters });
-        return response.data.transactions;
+        return response.data.entries;
     },
 
-    async createTransaction(data: {
+    async createEntry(data: {
         amount: number;
         type: 'income' | 'expense';
         description: string;
         date: string;
         categoryId: number;
         attachment?: File;
-    }): Promise<Transaction> {
+    }): Promise<Entry> {
         const formData = new FormData();
         formData.append('amount', data.amount.toString());
         formData.append('type', data.type);
@@ -36,10 +36,10 @@ export const transactionService = {
                 'Content-Type': 'multipart/form-data',
             },
         });
-        return response.data.transaction;
+        return response.data.entry;
     },
 
-    async updateTransaction(
+    async updateEntry(
         id: number,
         data: {
             amount?: number;
@@ -49,7 +49,7 @@ export const transactionService = {
             categoryId?: number;
             attachment?: File;
         }
-    ): Promise<Transaction> {
+    ): Promise<Entry> {
         const formData = new FormData();
 
         if (data.amount !== undefined)
@@ -66,10 +66,10 @@ export const transactionService = {
                 'Content-Type': 'multipart/form-data',
             },
         });
-        return response.data.transaction;
+        return response.data.entry;
     },
 
-    async deleteTransaction(id: number): Promise<void> {
+    async deleteEntry(id: number): Promise<void> {
         await api.delete(`/entry/${id}`);
     },
 
