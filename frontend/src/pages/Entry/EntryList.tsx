@@ -124,7 +124,7 @@ const Entries: React.FC = () => {
         <div className="px-4 py-6 sm:px-0">
             <div className="border-4 border-dashed border-gray-200 rounded-lg p-6">
                 <div className="flex justify-between items-center mb-6">
-                    <h1 className="text-2xl font-bold text-gray-900">
+                    <h1 className="text-2xl font-bold text-white">
                         Transações
                     </h1>
                     <button
@@ -422,6 +422,14 @@ const Entries: React.FC = () => {
                                             onClick={() => {
                                                 setShowForm(false);
                                                 setEditingEntry(null);
+                                                setFormData({
+                                                    amount: '',
+                                                    type: 'expense',
+                                                    description: '',
+                                                    date: new Date().toISOString().split('T')[0],
+                                                    categoryId: '',
+                                                    attachment: null,
+                                                });
                                             }}
                                             className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300"
                                         >
