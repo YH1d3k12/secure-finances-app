@@ -422,6 +422,14 @@ const Entries: React.FC = () => {
                                             onClick={() => {
                                                 setShowForm(false);
                                                 setEditingEntry(null);
+                                                setFormData({
+                                                    amount: '',
+                                                    type: 'expense',
+                                                    description: '',
+                                                    date: new Date().toISOString().split('T')[0],
+                                                    categoryId: '',
+                                                    attachment: null,
+                                                });
                                             }}
                                             className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300"
                                         >

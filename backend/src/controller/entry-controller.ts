@@ -21,7 +21,7 @@ export class EntryController {
                 amount,
                 type,
                 description,
-                new Date(date),
+                new Date(date.replace(/-/g, '/')),
                 categoryId,
                 attachment
             );
@@ -105,7 +105,7 @@ export class EntryController {
                 amount,
                 type,
                 description,
-                date ? new Date(date) : undefined,
+                date ? new Date(date.replace(/-/g, '/')) : undefined,
                 categoryId,
                 attachment
             );
