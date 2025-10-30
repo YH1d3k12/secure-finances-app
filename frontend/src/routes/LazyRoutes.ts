@@ -1,11 +1,7 @@
 import dashboardRoutes from '../pages/Dashboard/routes';
 import categoryRoutes from '../pages/Category/routes';
-import transactionRoutes from '../pages/Transaction/routes';
+import entryRoutes from '../pages/Entry/routes';
 
-const routes = [
-  ...dashboardRoutes,
-  ...categoryRoutes,
-  ...transactionRoutes,
-];
+const routes = [...dashboardRoutes, ...categoryRoutes, ...entryRoutes];
 
 export default routes;
