@@ -4,6 +4,7 @@ import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import path from 'path';
+import helmet from 'helmet';
 import { initializeDatabase } from './config/database';
 import { sanitizeMiddleware } from './middleware/sanitizeMiddleware';
 
@@ -25,6 +26,26 @@ app.use(
     cors({
         origin: 'http://localhost:5173',
     })
+);
+
+app.use(helmet()); 
+
+app.use(
+  helmet.contentSecurityPolicy({
+    useDefaults: true,
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'"],
+      styleSrc: ["'self'", ""],
+      imgSrc: ["'self'", "data:"],
+      connectSrc: ["'self'", "http://localhost:5173"],
+      objectSrc: ["'none'"],
+      baseUri: ["'self'"],
+      frameAncestors: ["'none'"],
+      formAction: ["'self'"],
+      upgradeInsecureRequests: [],
+    },
+  })
 );
 
 app.use(express.json());
