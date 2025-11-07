@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import multer from 'multer';
 import path from 'path';
+import crypto from 'crypto';
 import { EntryController } from '../controller/entry-controller';
 import { CreateEntryDto, UpdateEntryDto } from '../dto/entry-dto';
 import { authMiddleware } from '../middleware/auth';
@@ -15,13 +16,11 @@ const storage = multer.diskStorage({
         cb(null, 'uploads/');
     },
     filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+        const randomBytes = crypto.randomBytes(16).toString('hex');
+        const uniqueSuffix = `${Date.now()}-${randomBytes}`;
         cb(
             null,
-            file.fieldname +
-                '-' +
-                uniqueSuffix +
-                path.extname(file.originalname)
+            `${file.fieldname}-${uniqueSuffix}${path.extname(file.originalname)}`
         );
     },
 });
